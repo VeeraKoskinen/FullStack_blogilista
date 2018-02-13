@@ -14,8 +14,26 @@ const totalLikes = (blogs) => {
     return likes
 }
 
+const favoriteBlog = (blogs) => {
+    if (blogs.length === 0) {
+        return "Taulukossa ei ole vielä yhtään blogia."
+    } else {
+        let favorite = blogs[0]
+        blogs.map(blog => {
+            if (favorite.likes < blog.likes) {
+                favorite = blog
+                console.log('---------- favorite vaihtuu ----------')
+                console.log(favorite)
+            }
+        })
+        return favorite
+        
+    }
+}
+
 module.exports = {
   dummy,
-  totalLikes
+  totalLikes,
+  favoriteBlog
 }
 
