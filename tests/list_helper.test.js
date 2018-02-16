@@ -143,6 +143,48 @@ const listWithSomeNegativeValueOfLikes = [
   },
 ]
 
+const someHaveEquallyManyLikes = [
+  {
+    _id: '5a422aa71b54a676134d87f8',
+    title: '4',
+    author: 'minä',
+    url: 'http://www.ehkaensiyona.fi',
+    likes: 40,
+    __v: 0
+  },
+  {
+    _id: '5a422aa71b54a696234d17f8',
+    title: '5',
+    author: 'sinä',
+    url: 'http://www.u.california.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
+    likes: 5,
+    __v: 0
+  },
+  {
+    _id: '5a422aa71b54a676134d17f0',
+    title: '6',
+    author: 'minä',
+    url: 'http://www.nukuisinpaensiyonaparemmin.fi',
+    likes: 10,
+    __v: 0
+  },
+  {
+    _id: '5c422aa71b55a676134d17f8',
+    title: '7',
+    author: 'kanahaukka',
+    url: 'http://www.ehkaensiyona.fi',
+    likes: 200,
+    __v: 0
+  },
+  {
+    _id: '5a456aa71b54a676134d87f8',
+    title: '8',
+    author: 'minä',
+    url: 'http://www.ehkaensiyona.fi',
+    likes: 150,
+    __v: 0
+  }
+]
 
 
 describe('total likes', () => {
@@ -233,4 +275,38 @@ describe('most blogs', () => {
   })  
 
 
+})
+
+describe('most likes', () => {
+  test('if the list is empty, we will give the right information of situation ', () => {
+    const result = listHelper.mostLikes(emptyList)
+    expect(result).toEqual("Taulukossa ei ole vielä yhtään bloggaajaa.")
+  })
+
+  test('if there is only one blog we return its author', () => {
+    const result = listHelper.mostLikes(listWithOneBlog)
+    expect(result).toEqual({
+      name: "Edsger W. Dijkstra", 
+      likes: 5
+    })
+  })
+
+  test('if there are many blogs and authors in the list we pick the one who has the most likes (1)', () => {
+    const result = listHelper.mostLikes(listWithManyBlogs)
+    expect(result).toEqual({
+      name: "minä",
+      likes: 239
+    })
+  })
+
+  test('if there are many blogs and authors in the list we pick the one who has the most blogs (2)', () => {
+    const result = listHelper.mostLikes(listWithManyBlogs2)
+    expect(result).toEqual({
+      name: "minä",
+      likes: 486
+    })
+  })  
+
+
+  
 })

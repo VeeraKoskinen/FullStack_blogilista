@@ -9,8 +9,6 @@ const totalLikes = (blogs) => {
             likes += blog.likes
         }    
     })
-    console.log("--------- tykkäysten määrä: --------")
-    console.log(likes)
     return likes
 }
 
@@ -22,8 +20,6 @@ const favoriteBlog = (blogs) => {
         blogs.map(blog => {
             if (favorite.likes < blog.likes) {
                 favorite = blog
-                console.log('---------- favorite vaihtuu ----------')
-                console.log(favorite)
             }
         })
         return favorite
@@ -36,13 +32,11 @@ const favoriteBlog = (blogs) => {
 const mostBlogs = (blogs) => {
 
     if (blogs.length === 0) {
-        console.log("---- sisällä if:issä ----")
         return "Taulukossa ei ole vielä yhtään bloggaajaa."
 
     } else {
 
         const authorsWithTheirBlogs = blogs.map(blog => blog.author).reduce((acc, author) => {    
-            console.log(acc)
             if (!acc[author]) {
                 acc[author] = 1;
             } else {
@@ -66,13 +60,46 @@ const mostBlogs = (blogs) => {
 
         return superBlogger
         
-    }
+    }    
+}
+
+const mostLikes = (blogs) => {
+    if (blogs.length === 0) {
+        return "Taulukossa ei ole vielä yhtään bloggaajaa."
+    } else {
+        const authorsWithTheirLikes = blogs.reduce((acc, blog) => {      
+            if (!acc[blog.author]) {
+                acc[blog.author] = blog.likes
+            } else {
+                acc[blog.author] += blog.likes
+            }   
+            return acc;
+        }, {});
+        console.log(authorsWithTheirLikes)
+    
+
+        let authorObjects = []
+        Object.keys(authorsWithTheirLikes).map(author => {
+            const object = {name: author, likes: authorsWithTheirLikes[author]}
+            authorObjects.push(object)
+        }) 
+
+        let superBlogger = {name: "X", likes:0}
+        authorObjects.map(author => {
+            if (author.likes > superBlogger.likes) {
+                superBlogger = author
+            }
+        })
+
+        return superBlogger
+    }    
 }
 
 module.exports = {
   dummy,
   totalLikes,
   favoriteBlog,
-  mostBlogs
+  mostBlogs,
+  mostLikes
 }
 
