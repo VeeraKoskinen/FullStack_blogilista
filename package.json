@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "watch": "node_modules/.bin/nodemon index.js",
-    "test": "jest --verbose",
+    "test": "NODE_ENV=test jest --verbose",
     "lint": "node_modules/.bin/eslint ."
   },
   "author": "Veera Koskinen",

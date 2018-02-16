@@ -31,9 +31,48 @@ const favoriteBlog = (blogs) => {
     }
 }
 
+/* selvitetään kenellä kirjoittajalla on eniten blogeja */
+
+const mostBlogs = (blogs) => {
+
+    if (blogs.length === 0) {
+        console.log("---- sisällä if:issä ----")
+        return "Taulukossa ei ole vielä yhtään bloggaajaa."
+
+    } else {
+
+        const authorsWithTheirBlogs = blogs.map(blog => blog.author).reduce((acc, author) => {    
+            console.log(acc)
+            if (!acc[author]) {
+                acc[author] = 1;
+            } else {
+                acc[author] += 1
+            }   
+            return acc;
+        }, {});
+
+        let authorObjects = []
+        Object.keys(authorsWithTheirBlogs).map(author => {
+            const object = {name: author, blogs: authorsWithTheirBlogs[author]}
+            authorObjects.push(object)
+        }) 
+
+        let superBlogger = {name: "X", blogs:0}
+        authorObjects.map(author => {
+            if (author.blogs > superBlogger.blogs) {
+                superBlogger = author
+            }
+        })
+
+        return superBlogger
+        
+    }
+}
+
 module.exports = {
   dummy,
   totalLikes,
-  favoriteBlog
+  favoriteBlog,
+  mostBlogs
 }
 
