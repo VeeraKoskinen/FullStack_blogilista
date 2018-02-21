@@ -119,6 +119,33 @@ test('blog without author is not added ', async () => {
     expect(response.body.length).toBe(intialBlogs.body.length)
 })
 
+test('blog without likes is added with value 0', async () => {
+    const newBlog = {
+        title: "Elämää Keuruulla",
+        author: "Kruusialainen mikrokirsikka",
+        url: "www.hukkaputki.fi"
+    }
+  
+    const intialBlogs = await api
+      .get('/api/blogs')
+  
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(200)
+  
+    const response = await api
+      .get('/api/blogs')
+    console.log('response: ',response.body)
+    const titles = response.body.map(x => x.title)
+    const result = response.body.find(x => x.title === "Elämää Keuruulla")
+    console.log('Result näyttää tältä: ', result)
+
+    expect(response.body.length).toBe(intialBlogs.body.length + 1)
+    expect(titles).toContain('Elämää Keuruulla')
+    expect(result.likes).toEqual(0)    
+})
+
 
 afterAll(() => {
   server.close()

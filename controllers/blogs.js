@@ -13,15 +13,24 @@ blogsRouter.post('/', async (request, response) => {
     const body = request.body
 
     if (body.title === undefined || body.author === undefined) {
-      return response.status(400).json({ error: 'title missing' })
+      return response.status(400).json({ error: 'title or author in missing' })
+    }
+
+    let likes = body.likes
+    if (likes === undefined) {
+      console.log("Mentiin käsittelemään likejä")
+      likes = 0
+      console.log(likes)
     }
 
     const blog = new Blog({
       title: body.title,
       author: body.author,
       url: body.url,
-      likes: body.likes
+      likes: likes
     })
+
+    console.log('uuden blogin like-arvo:', blog.likes)
 
     const savedBlog = await blog.save()
     response.json(Blog.format(savedBlog))
