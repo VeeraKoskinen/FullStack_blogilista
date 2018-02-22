@@ -15,7 +15,7 @@ describe('when there is initially some blogs saved', async () => {
 
     test('All blogs are returned as json GET /api/blogs', async () => {
 
-        const blogsInDatabase = await blogsInDb()  
+        const blogsInDatabase = await blogsInDb()
 
         const response = await api
             .get('/api/blogs')
@@ -32,7 +32,7 @@ describe('when there is initially some blogs saved', async () => {
 
 })
 
-describe('addition of a new note', async () => {
+describe('addition of a new blog', async () => {
 
     test('POST /api/blogs succeeds with valid data', async () => {
         const blogsAtStart = await blogsInDb()
@@ -50,7 +50,7 @@ describe('addition of a new note', async () => {
             .expect(200)
             .expect('Content-Type', /application\/json/)
 
-        const blogsAfterOperation = await blogsInDb()    
+        const blogsAfterOperation = await blogsInDb()
         expect(blogsAfterOperation.length).toBe(blogsAtStart.length + 1)
         const titles = blogsAfterOperation.map(x => x.title)
         expect(titles).toContain('Uutta putkeen')
@@ -83,7 +83,7 @@ describe('addition of a new note', async () => {
             likes: 0
         }
 
-        const blogsAtStart = await blogsInDb() 
+        const blogsAtStart = await blogsInDb()
 
         await api
             .post('/api/blogs')
@@ -117,42 +117,101 @@ describe('addition of a new note', async () => {
         expect(blogsAfterOperation.length).toBe(blogsAtStart.length + 1)
         expect(titles).toContain('Elämää Keuruulla')
         expect(result.likes).toEqual(0)
-    })  
+    })
 
 })
 
-describe('deletion of a note', async () => {
+describe('deletion of a blog', async () => {
     let addedBlog
 
     beforeAll(async () => {
-      addedBlog = new Blog({
-        title: "Kirkuvan Kurpan tarina",
-        author: "Kirkuva Kurppa",
-        url: "www.kurppaillaan.fi",
-        likes: 4
-      })
-      await addedBlog.save()
+        addedBlog = new Blog({
+            title: "Kirkuvan Kurpan tarina",
+            author: "Kirkuva Kurppa",
+            url: "www.kurppaillaan.fi",
+            likes: 4
+        })
+        await addedBlog.save()
     })
 
     test('DELETE /api/blogs/:id succeeds with proper statuscode', async () => {
         const blogsAtStart = await blogsInDb()
-  
+
         await api
-          .delete(`/api/blogs/${addedBlog._id}`)
-          .expect(204)
-  
+            .delete(`/api/blogs/${addedBlog._id}`)
+            .expect(204)
+
         const blogsAfterOperation = await blogsInDb()
-  
+
         const titles = blogsAfterOperation.map(x => x.title)
-  
+
         expect(titles).not.toContain(addedBlog.title)
         expect(blogsAfterOperation.length).toBe(blogsAtStart.length - 1)
-    
+
     })
-  
+
+})
+
+describe('update blog properly', async () => {
+
+    let addedBlog
+
+    beforeAll(async () => {
+        sentBlog = new Blog({
+            title: "Vanhuudesta kärsivä",
+            author: "Kirkuva Kurppa",
+            url: "www.vanhuksetBloggaa.fi",
+            likes: 9
+        })
+        addedBlog = await sentBlog.save()
+    })
+
+    test('PUT /api/blogs:id manage to update the title', async () => {
+        const blogsAtStart = await blogsInDb()
+
+        const updatedBlog = new Blog ({
+            title: "Uutuudesta nouseva",
+            author: "Kirkuva Kurppa",
+            url: "www.vanhuksetBloggaa.fi",
+            likes: 9
+        })
+
+        console.log("addedBlog")
+        await api
+            .put(`/api/blogs/${addedBlog._id}`)
+            .send(updatedBlog)
+            .expect(200)
+
+        const blogsAfterOperation = await blogsInDb()
+        const titles = blogsAfterOperation.map(x => x.title)
+        expect(titles).toContain(updatedBlog.title)
+        expect(blogsAfterOperation.length).toBe(blogsAtStart.length)
+    })
+
+    test('PUT /api/blogs:id manage to update the author', async () => {
+        const blogsAtStart = await blogsInDb()
+
+        const updatedBlog = new Blog ({
+            title: "Uutuudesta nouseva",
+            author: "Kirkuva Karppi",
+            url: "www.vanhuksetBloggaa.fi",
+            likes: 9
+        })
+
+        console.log("addedBlog")
+        await api
+            .put(`/api/blogs/${addedBlog._id}`)
+            .send(updatedBlog)
+            .expect(200)
+
+        const blogsAfterOperation = await blogsInDb()
+        const authors = blogsAfterOperation.map(x => x.author)
+        expect(authors).toContain(updatedBlog.author)
+        expect(blogsAfterOperation.length).toBe(blogsAtStart.length)
+    })
 
     afterAll(() => {
         server.close()
     })
-})   
+})
 

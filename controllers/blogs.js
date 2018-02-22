@@ -8,13 +8,12 @@ blogsRouter.get('/', async (request, response) => {
 })
 
 blogsRouter.delete('/:id', async (request, response) => {
-    try {
-      await Blog.findByIdAndRemove(request.params.id)  
-      response.status(204).end()
-    } catch (exception) {
-      console.log(exception)
-      response.status(400).send({ error: 'malformatted id' })
-    }
+  try {
+    await Blog.findByIdAndRemove(request.params.id)
+    response.status(204).end()
+  } catch (exception) {
+    response.status(400).send({ error: 'malformatted id' })
+  }
 })
 
 blogsRouter.post('/', async (request, response) => {
@@ -28,9 +27,7 @@ blogsRouter.post('/', async (request, response) => {
 
     let likes = body.likes
     if (likes === undefined) {
-      console.log("Mentiin käsittelemään likejä")
       likes = 0
-      console.log(likes)
     }
 
     const blog = new Blog({
@@ -50,6 +47,31 @@ blogsRouter.post('/', async (request, response) => {
     response.status(500).json({ error: 'something went wrong...' })
   }
 
+})
+
+blogsRouter.put('/:id', async (request, response) => {
+
+  try {
+    const body = request.body
+
+    if (body.title === undefined || body.author === undefined) {
+      return response.status(400).json({ error: 'title or author in missing' })
+    }
+
+    const newBlog = {
+      title: body.title,
+      author: body.author,
+      url: body.url,
+      likes: body.likes
+    }
+
+    const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, newBlog, { new: true })
+    response.status(200).json(Blog.format(updatedBlog))
+
+  } catch (exception) {
+    console.log(exception)
+    response.status(400).json({ error: 'mallformated id' })
+  }
 })
 
 module.exports = blogsRouter  
