@@ -7,6 +7,16 @@ blogsRouter.get('/', async (request, response) => {
   response.json(blogs.map(Blog.format))
 })
 
+blogsRouter.delete('/:id', async (request, response) => {
+    try {
+      await Blog.findByIdAndRemove(request.params.id)  
+      response.status(204).end()
+    } catch (exception) {
+      console.log(exception)
+      response.status(400).send({ error: 'malformatted id' })
+    }
+})
+
 blogsRouter.post('/', async (request, response) => {
 
   try {

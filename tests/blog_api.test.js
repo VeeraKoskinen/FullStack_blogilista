@@ -117,11 +117,42 @@ describe('addition of a new note', async () => {
         expect(blogsAfterOperation.length).toBe(blogsAtStart.length + 1)
         expect(titles).toContain('Elämää Keuruulla')
         expect(result.likes).toEqual(0)
+    })  
+
+})
+
+describe('deletion of a note', async () => {
+    let addedBlog
+
+    beforeAll(async () => {
+      addedBlog = new Blog({
+        title: "Kirkuvan Kurpan tarina",
+        author: "Kirkuva Kurppa",
+        url: "www.kurppaillaan.fi",
+        likes: 4
+      })
+      await addedBlog.save()
     })
+
+    test('DELETE /api/blogs/:id succeeds with proper statuscode', async () => {
+        const blogsAtStart = await blogsInDb()
+  
+        await api
+          .delete(`/api/blogs/${addedBlog._id}`)
+          .expect(204)
+  
+        const blogsAfterOperation = await blogsInDb()
+  
+        const titles = blogsAfterOperation.map(x => x.title)
+  
+        expect(titles).not.toContain(addedBlog.title)
+        expect(blogsAfterOperation.length).toBe(blogsAtStart.length - 1)
+    
+    })
+  
 
     afterAll(() => {
         server.close()
     })
-
-})
+})   
 
