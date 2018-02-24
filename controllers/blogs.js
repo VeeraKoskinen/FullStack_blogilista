@@ -13,9 +13,19 @@ blogsRouter.get('/', async (request, response) => {
 
 blogsRouter.delete('/:id', async (request, response) => {
   try {
+    const decodedToken = jwt.verify(request.token, process.env.SECRET)
+
+    const blog = await Blog.findById(request.params.id)
+    const user = await User.findById(decodedToken.id)
+
+    if ( blog.user.toString() !== user._id.toString() ){
+      return response.status(401).json({ error: 'You are not the one who added this blog! You dont have right to remove it.' })
+    }
+
     await Blog.findByIdAndRemove(request.params.id)
     response.status(204).end()
   } catch (exception) {
+    console.log("HUIIII",exception)
     response.status(400).send({ error: 'malformatted id' })
   }
 })
