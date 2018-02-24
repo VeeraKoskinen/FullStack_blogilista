@@ -1,9 +1,12 @@
 const bcrypt = require('bcrypt')
 const usersRouter = require('express').Router()
 const User = require('../models/user')
+const Blog = require('../models/blog')
 
 usersRouter.get('/', async (request, response) => {
-    const users = await User.find({})
+    const users = await User
+        .find({})
+        .populate('blogs', { _id: 1, likes: 1, author: 1, title: 1, url: 1 } )
     response.json(users.map(User.format))
 })
 
@@ -36,7 +39,8 @@ usersRouter.post('/', async (request, response) => {
             username: body.username,
             name: body.name,
             passwordHash,
-            adult: grownup
+            adult: grownup,
+            blogs: body.blogs
         })
 
         const savedUser = await user.save()
