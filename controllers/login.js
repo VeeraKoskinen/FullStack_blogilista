@@ -20,8 +20,9 @@ loginRouter.post('/', async (request, response) => {
     username: user.username,
     id: user._id
   }
-
+  console.log("luodaaan token")
   const token = jwt.sign(userForToken, process.env.SECRET)
+  console.log(token)
 
   response.status(200).send({ token, username: user.username, name: user.name })
 })
